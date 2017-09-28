@@ -47,7 +47,7 @@ RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-lo
     make install && \
     cd ../../ && \
     rm -rf mpc-0.8.1*
-RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/gcc-4.9.3.tar.bz && \
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/gcc-4.9.3.tar.bz2 && \
     tar xvfj gcc-4.9.3.tar.bz2 && \
     mkdir -p gcc-4.9.3/build && \
     cd gcc-4.9.3/build && \
@@ -64,11 +64,17 @@ RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-lo
     ln -s /usr/bin/ranlib /usr/local/bin/ranlib && \
     ln -s /usr/bin/strip /usr/local/bin/strip && \
     ln -s /usr/bin/ar /usr/local/bin/ar
-WORKDIR /mnt/installers/Python-2.7.11
-RUN make install
-RUN ln -sf /opt/python27/bin/python /usr/local/bin/python
-RUN wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py
-RUN /usr/local/bin/python get-pip.py
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/Python-2.7.11.tgz && \
+    tar xvfz Python-2.7.11.tgz && \
+    cd Python-2.7.11 && \
+    ./configure --prefix=/opt/python27 && \
+    make && \
+    make install && \
+    cd ../ && \
+    rm -rf Python-2.7.11* && \
+    ln -sf /opt/python27/bin/python /usr/local/bin/python && \
+    wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && \
+    /usr/local/bin/python get-pip.py
 WORKDIR /mnt/installers/scons-2.4.1
 RUN python setup.py install
 RUN ln -s /opt/python27/bin/scons /usr/local/bin/
