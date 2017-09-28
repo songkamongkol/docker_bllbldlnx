@@ -1,28 +1,25 @@
 FROM centos:5.11
-# RUN mkdir -p /var/cache/yum/base /var/cache/yum/extras /var/cache/yum/updates
-# RUN echo "http://vault.centos.org/5.11/os/x86_64/" > /var/cache/yum/base/mirrorlist.txt
-# RUN echo "http://vault.centos.org/5.11/extras/x86_64/" > /var/cache/yum/extras/mirrorlist.txt
-# RUN echo "http://vault.centos.org/5.11/updates/x86_64/" > /var/cache/yum/updates/mirrorlist.txt
-RUN sed -i 's/enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf
-RUN sed -i 's/mirrorlist/#mirrorlist/' /etc/yum.repos.d/*.repo
-RUN sed -i 's|#baseurl=http://mirror.centos.org/centos/$releasever|baseurl=http://vault.centos.org/5.11|' /etc/yum.repos.d/*.repo
-ADD installers /mnt
-RUN rpm -ivh /mnt/installers/epel-release-5-4.noarch.rpm
-RUN yum update -y
-RUN yum upgrade -y
-RUN yum install -y \
- gcc-c++ \
- glibc-devel \
- zlib-devel.x86_64 \
- glibc-devel.i386 \
- m4 \
- make \
- wget \
- openssl-devel.x86_64 \
- sqlite-devel.x86_64 \
- ccache \
- java-1.7.0-openjdk.x86_64 \
- bzip2
+RUN sed -i 's/enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf && \
+    sed -i 's/mirrorlist/#mirrorlist/' /etc/yum.repos.d/*.repo && \
+    sed -i 's|#baseurl=http://mirror.centos.org/centos/$releasever|baseurl=http://vault.centos.org/5.11|' /etc/yum.repos.d/*.repo
+RUN yum update -y && \
+    yum upgrade -y && \
+    yum install -y \
+             gcc-c++ \
+             glibc-devel \
+             zlib-devel.x86_64 \
+             glibc-devel.i386 \
+             m4 \
+             make \
+             wget \
+             openssl-devel.x86_64 \
+             sqlite-devel.x86_64 \
+             ccache \
+             java-1.7.0-openjdk.x86_64 \
+             bzip2 && \
+    yum clean all
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/epel-release-5-4.noarch.rpm && \
+    rpm -ivh /mnt/installers/epel-release-5-4.noarch.rpm
 WORKDIR /mnt/installers/gmp-4.3.2/build
 RUN make install
 WORKDIR /mnt/installers/mpfr-2.4.2/build
