@@ -17,6 +17,7 @@ RUN yum update -y && \
              ccache \
              java-1.7.0-openjdk.x86_64 \
              bzip2 && \
+             libgcc-4.1.2-55.el5.i386 && \
     yum clean all
 RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/epel-release-5-4.noarch.rpm && \
     rpm -ivh epel-release-5-4.noarch.rpm
@@ -75,11 +76,21 @@ RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-lo
     ln -sf /opt/python27/bin/python /usr/local/bin/python && \
     wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py && \
     /usr/local/bin/python get-pip.py
-WORKDIR /mnt/installers/scons-2.4.1
-RUN python setup.py install
-RUN ln -s /opt/python27/bin/scons /usr/local/bin/
-RUN rpm -Uvh /mnt/installers/distcc-server-3.1-1.i386.rpm
-RUN yum install -y libgcc-4.1.2-55.el5.i386
-RUN /mnt/installers/ActiveTcl8.5.18.0.298892-linux-ix86-threaded/install.sh --directory /opt/ActiveTcl-8.5 --demo-directory /opt/ActiveTcl-8.5/demos
-RUN ln -s /opt/ActiveTcl-8.5/bin/tclsh /usr/bin/tclsh
-RUN cp /mnt/installers/p4 /usr/local/bin/p4 && chmod a+x /usr/local/bin/p4
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/scons-2.4.1.tar.gz && \
+    tar xvfz scons-2.4.1.tar.gz && \
+    cd scons-2.4.1 && \
+    python setup.py install && \
+    ln -s /opt/python27/bin/scons /usr/local/bin/
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/distcc-3.1-1.i386.rpm && \
+    rpm -Uvh distcc-server-3.1-1.i386.rpm
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/distcc-server-3.1-1.i386.rpm && \
+    rpm -Uvh distcc-server-3.1-1.i386.rpm
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/ActiveTcl8.5.18-threaded.tar.gz && \
+    tar xvfz ActiveTcl8.5.18-threaded.tar.gz && \
+    ./ActiveTcl8.5.18.0.298892-linux-ix86-threaded/install.sh --directory /opt/ActiveTcl-8.5 --demo-directory /opt/ActiveTcl-8.5/demos  && \
+    rm -rf ActiveTcl8.5.18.0.298892-linux-ix86-threaded* && \
+    ln -sf /opt/ActiveTcl-8.5/bin/tclsh /usr/bin/tclsh
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/p4 && \
+    mv p4 /usr/local/bin/p4 && \
+    chmod a+x /usr/local/bin/p4
+ENV LD_LIBRARY_PATH /usr/gcc_4_9/lib
