@@ -19,27 +19,51 @@ RUN yum update -y && \
              bzip2 && \
     yum clean all
 RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/epel-release-5-4.noarch.rpm && \
-    rpm -ivh /mnt/installers/epel-release-5-4.noarch.rpm
-WORKDIR /mnt/installers/gmp-4.3.2/build
-RUN make install
-WORKDIR /mnt/installers/mpfr-2.4.2/build
-RUN make install
-WORKDIR /mnt/installers/mpc-0.8.1/build
-RUN make install
-WORKDIR /mnt/installers
-RUN wget ftp://gcc.gnu.org/pub/gcc/releases/gcc-4.9.3/gcc-4.9.3.tar.bz2 && tar xvfj gcc-4.9.3.tar.bz2 && mkdir /mnt/installers/gcc-4.9.3/build
-WORKDIR /mnt/installers/gcc-4.9.3/build
-RUN LD_LIBRARY_PATH=/usr/gcc_4_9/lib:$LD_LIBRARY_PATH LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/ C_INCLUDE_PATH=/usr/include/x86_64-linux-gnu CPLUS_INCLUDE_PATH=/usr/include/x86_64-linux-gnu ../configure --build=x86_64-linux-gnu --prefix=/usr/gcc_4_9 --with-gmp=/usr/gcc_4_9 --with-mpfr=/usr/gcc_4_9 --with-mpc=/usr/gcc_4_9 --enable-languages=c++ --enable-threads --enable-multilib --with-system-zlib
-RUN LD_LIBRARY_PATH=/usr/gcc_4_9/lib:$LD_LIBRARY_PATH LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/ C_INCLUDE_PATH=/usr/include/x86_64-linux-gnu CPLUS_INCLUDE_PATH=/usr/include/x86_64-linux-gnu make
-RUN LD_LIBRARY_PATH=/usr/gcc_4_9/lib:$LD_LIBRARY_PATH LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/ C_INCLUDE_PATH=/usr/include/x86_64-linux-gnu CPLUS_INCLUDE_PATH=/usr/include/x86_64-linux-gnu make install
-RUN mkdir -p /usr/local/gcc493/bin
-RUN ln -sf /usr/gcc_4_9/bin/gcc /usr/local/gcc493/bin/gcc
-RUN ln -sf /usr/gcc_4_9/bin/g++ /usr/local/gcc493/bin/g++
-RUN ln -sf /usr/gcc_4_9/lib/gcc/x86_64-linux-gnu/4.9.3/plugin/include/ansidecl.h /usr/local/include/ansidecl.h
-RUN ln -s /usr/bin/ld /usr/local/bin/ld
-RUN ln -s /usr/bin/ranlib /usr/local/bin/ranlib
-RUN ln -s /usr/bin/strip /usr/local/bin/strip
-RUN ln -s /usr/bin/ar /usr/local/bin/ar
+    rpm -ivh epel-release-5-4.noarch.rpm
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/gmp-4.3.2.tar.bz2 && \
+    tar xvfj gmp-4.3.2.tar.bz2 && \
+    mkdir -p gmp-4.3.2/build && \
+    cd gmp-4.3.2/build && \
+    ../configure --prefix=/usr/gcc_4_9 --build=x86_64-linux-gnu && \
+    make && \
+    make install && \
+    cd ../../ && \
+    rm -rf gmp-4.3.2*
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/mpfr-2.4.2.tar.bz2 && \
+    tar xvfj mpfr-2.4.2.tar.bz2 && \
+    mkdir -p mpfr-2.4.2/build && \
+    cd mpfr-2.4.2/build && \
+    ../configure --build=x86_64-linux-gnu --prefix=/usr/gcc_4_9 --with-gmp=/usr/gcc_4_9 && \
+    make && \
+    make install && \
+    cd ../../ && \
+    rm -rf mpfr-2.4.2*
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/mpc-0.8.1.tar.gz && \
+    tar xvfz mpc-0.8.1.tar.gz && \
+    mkdir -p mpc-0.8.1/build && \
+    cd mpc-0.8.1/build && \
+    ../configure --build=x86_64-linux-gnu --prefix=/usr/gcc_4_9 --with-gmp=/usr/gcc_4_9 --with-mpfr=/usr/gcc_4_9 && \
+    make && \
+    make install && \
+    cd ../../ && \
+    rm -rf mpc-0.8.1*
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/gcc-4.9.3.tar.bz && \
+    tar xvfj gcc-4.9.3.tar.bz2 && \
+    mkdir -p gcc-4.9.3/build && \
+    cd gcc-4.9.3/build && \
+    LD_LIBRARY_PATH=/usr/gcc_4_9/lib:$LD_LIBRARY_PATH LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/ C_INCLUDE_PATH=/usr/include/x86_64-linux-gnu CPLUS_INCLUDE_PATH=/usr/include/x86_64-linux-gnu ../configure --build=x86_64-linux-gnu --prefix=/usr/gcc_4_9 --with-gmp=/usr/gcc_4_9 --with-mpfr=/usr/gcc_4_9 --with-mpc=/usr/gcc_4_9 --enable-languages=c++ --enable-threads --enable-multilib --with-system-zlib && \
+    LD_LIBRARY_PATH=/usr/gcc_4_9/lib:$LD_LIBRARY_PATH LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/ C_INCLUDE_PATH=/usr/include/x86_64-linux-gnu CPLUS_INCLUDE_PATH=/usr/include/x86_64-linux-gnu make && \
+    LD_LIBRARY_PATH=/usr/gcc_4_9/lib:$LD_LIBRARY_PATH LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/ C_INCLUDE_PATH=/usr/include/x86_64-linux-gnu CPLUS_INCLUDE_PATH=/usr/include/x86_64-linux-gnu make install && \
+    cd ../../ && \
+    rm -rf gcc-4.9.3* && \
+    mkdir -p /usr/local/gcc493/bin && \
+    ln -sf /usr/gcc_4_9/bin/gcc /usr/local/gcc493/bin/gcc && \
+    ln -sf /usr/gcc_4_9/bin/g++ /usr/local/gcc493/bin/g++ && \
+    ln -sf /usr/gcc_4_9/lib/gcc/x86_64-linux-gnu/4.9.3/plugin/include/ansidecl.h /usr/local/include/ansidecl.h && \
+    ln -s /usr/bin/ld /usr/local/bin/ld && \
+    ln -s /usr/bin/ranlib /usr/local/bin/ranlib && \
+    ln -s /usr/bin/strip /usr/local/bin/strip && \
+    ln -s /usr/bin/ar /usr/local/bin/ar
 WORKDIR /mnt/installers/Python-2.7.11
 RUN make install
 RUN ln -sf /opt/python27/bin/python /usr/local/bin/python
