@@ -2,8 +2,6 @@ FROM centos:5.11
 RUN sed -i 's/enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf && \
     sed -i 's/mirrorlist/#mirrorlist/' /etc/yum.repos.d/*.repo && \
     sed -i 's|#baseurl=http://mirror.centos.org/centos/$releasever|baseurl=http://vault.centos.org/5.11|' /etc/yum.repos.d/*.repo
-RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/epel-release-5-4.noarch.rpm && \
-    rpm -ivh epel-release-5-4.noarch.rpm
 RUN yum update -y && \
     yum upgrade -y && \
     yum install -y \
@@ -16,13 +14,15 @@ RUN yum update -y && \
              wget \
              openssl-devel.x86_64 \
              sqlite-devel.x86_64 \
-             ccache \
              java-1.7.0-openjdk.x86_64 \
              bzip2 \
              libgcc-4.1.2-55.el5.i386  \
              openssh-server \
              openssh-clients && \             
     yum clean all
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/epel-release-5-4.noarch.rpm && \
+    rpm -ivh epel-release-5-4.noarch.rpm
+RUN yum install -y ccache && yum clean all
 RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/gmp-4.3.2.tar.bz2 && \
     tar xvfj gmp-4.3.2.tar.bz2 && \
     mkdir -p gmp-4.3.2/build && \
