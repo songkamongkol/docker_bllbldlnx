@@ -82,7 +82,7 @@ RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-lo
     python setup.py install && \
     ln -s /opt/python27/bin/scons /usr/local/bin/
 RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/distcc-3.1-1.i386.rpm && \
-    rpm -Uvh distcc-server-3.1-1.i386.rpm
+    rpm -Uvh distcc-3.1-1.i386.rpm
 RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/distcc-server-3.1-1.i386.rpm && \
     rpm -Uvh distcc-server-3.1-1.i386.rpm
 RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/ActiveTcl8.5.18-threaded.tar.gz && \
