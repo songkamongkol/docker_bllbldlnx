@@ -96,7 +96,7 @@ RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-lo
 ENV LD_LIBRARY_PATH /usr/gcc_4_9/lib
 
 # assign password
-echo "root:spirent" | chpasswd
+RUN echo "root:spirent" | chpasswd
 
 # SSH
 EXPOSE 22
