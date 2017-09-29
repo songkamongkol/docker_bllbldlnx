@@ -16,7 +16,7 @@ RUN yum update -y && \
              sqlite-devel.x86_64 \
              ccache \
              java-1.7.0-openjdk.x86_64 \
-             bzip2 && \
+             bzip2 \
              libgcc-4.1.2-55.el5.i386 && \
     yum clean all
 RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/epel-release-5-4.noarch.rpm && \
