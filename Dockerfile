@@ -12,6 +12,7 @@ RUN yum update -y && \
              m4 \
              make \
              wget \
+             which \
              openssl-devel.x86_64 \
              sqlite-devel.x86_64 \
              java-1.7.0-openjdk.x86_64 \
