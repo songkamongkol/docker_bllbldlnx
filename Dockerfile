@@ -94,3 +94,6 @@ RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-lo
     mv p4 /usr/local/bin/p4 && \
     chmod a+x /usr/local/bin/p4
 ENV LD_LIBRARY_PATH /usr/gcc_4_9/lib
+
+# SSH
+EXPOSE 22
