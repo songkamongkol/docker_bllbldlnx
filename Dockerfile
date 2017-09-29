@@ -2,6 +2,8 @@ FROM centos:5.11
 RUN sed -i 's/enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf && \
     sed -i 's/mirrorlist/#mirrorlist/' /etc/yum.repos.d/*.repo && \
     sed -i 's|#baseurl=http://mirror.centos.org/centos/$releasever|baseurl=http://vault.centos.org/5.11|' /etc/yum.repos.d/*.repo
+RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/epel-release-5-4.noarch.rpm && \
+    rpm -ivh epel-release-5-4.noarch.rpm
 RUN yum update -y && \
     yum upgrade -y && \
     yum install -y \
@@ -17,10 +19,10 @@ RUN yum update -y && \
              ccache \
              java-1.7.0-openjdk.x86_64 \
              bzip2 \
-             libgcc-4.1.2-55.el5.i386 && \
+             libgcc-4.1.2-55.el5.i386  \
+             openssh-server \
+             openssh-clients && \             
     yum clean all
-RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/epel-release-5-4.noarch.rpm && \
-    rpm -ivh epel-release-5-4.noarch.rpm
 RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-local/bllbldlnx/gmp-4.3.2.tar.bz2 && \
     tar xvfj gmp-4.3.2.tar.bz2 && \
     mkdir -p gmp-4.3.2/build && \
@@ -94,24 +96,14 @@ RUN wget http://artifactory.calenglab.spirentcom.com:8081/artifactory/generic-lo
     mv p4 /usr/local/bin/p4 && \
     chmod a+x /usr/local/bin/p4
 ENV LD_LIBRARY_PATH /usr/gcc_4_9/lib
-
 # assign password
 RUN echo "root:spirent" | chpasswd
-
-# install openssh server
-RUN yum -y install openssh-server
-
-# install openssh clients
-RUN yum -y install openssh-clients
-
 # make ssh directories
-RUN mkdir /root/.ssh
-RUN mkdir /var/run/sshd
-
+RUN mkdir /root/.ssh && \
+    mkdir /var/run/sshd
 # create host keys
-RUN ssh-keygen -b 1024 -t rsa -f /etc/ssh/ssh_host_key
-RUN ssh-keygen -b 1024 -t rsa -f /etc/ssh/ssh_host_rsa_key
-RUN ssh-keygen -b 1024 -t dsa -f /etc/ssh/ssh_host_dsa_key
-
+RUN ssh-keygen -b 1024 -t rsa -f /etc/ssh/ssh_host_key &&  \
+    ssh-keygen -b 1024 -t rsa -f /etc/ssh/ssh_host_rsa_key && \
+    ssh-keygen -b 1024 -t dsa -f /etc/ssh/ssh_host_dsa_key
 # SSH
 EXPOSE 22
