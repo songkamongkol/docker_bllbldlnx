@@ -98,5 +98,20 @@ ENV LD_LIBRARY_PATH /usr/gcc_4_9/lib
 # assign password
 RUN echo "root:spirent" | chpasswd
 
+# install openssh server
+RUN yum -y install openssh-server
+
+# install openssh clients
+RUN yum -y install openssh-clients
+
+# make ssh directories
+RUN mkdir /root/.ssh
+RUN mkdir /var/run/sshd
+
+# create host keys
+RUN ssh-keygen -b 1024 -t rsa -f /etc/ssh/ssh_host_key
+RUN ssh-keygen -b 1024 -t rsa -f /etc/ssh/ssh_host_rsa_key
+RUN ssh-keygen -b 1024 -t dsa -f /etc/ssh/ssh_host_dsa_key
+
 # SSH
 EXPOSE 22
